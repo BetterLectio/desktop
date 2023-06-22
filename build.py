@@ -1,9 +1,20 @@
 import os
 import shutil
 import json
+import platform
+
+system = platform.system()
 
 # CLEAR ANY PREVIOUS BUILD DATA
-os.system("rm -rf temp dist && mkdir dist")
+try:
+    shutil.rmtree("temp")
+except Exception:
+    pass
+try:
+    shutil.rmtree("dist")
+except Exception:
+    pass
+os.mkdir("dist")
 
 os.system("git clone https://github.com/BetterLectio/betterLectio.git temp")
 
@@ -47,7 +58,6 @@ package["author"] = "Better Lectio Team"
 package["description"] = "Better Lectio er en forbedring af Lectio, et dansk lektionssystem. Vi har gjort det nemmere at finde informationer og få overblik over skolegangen. Vi har også lavet en ny, brugervenlig og moderne brugerflade. Better Lectio er open source, så alle kan se koden og bidrage. Projektet er stadig under udvikling, så hvis du har forslag eller finder fejl, er du velkommen til at åbne en issue på GitHub."
 
 package["scripts"]["build-electron-linux"] = "concurrently --maxProcesses=1 \"cross-env NODE_ENV=production BUILD_TYPE=app vite build\" \"electron-builder -l --config build.config.json\""
-#package["scripts"]["build-backend"] = "concurrently --maxProcesses=1 \"del static/backend/*\" \"wget https://raw.githubusercontent.com/BetterLectio/BetterLectio-Flask-Backend/main/api/app.py -d static/backend/backend.py\" \"wget https://raw.githubusercontent.com/BetterLectio/BetterLectio-Flask-Backend/main/requirements.txt -d static/backend/\" \"pip install -r static/backend/requirements.txt\" \"pip install pyinstaller\" \"pyinstaller --onefile static/backend/backend.py --distpath static/backend/ --workpath temp/\" \"del temp backend.spec static/backend/requirements.txt\""
 
 open("temp/package.json", "w").write(json.dumps(package, indent=2))
 
@@ -78,25 +88,37 @@ open("temp/src/lib/components/PageTransition.svelte", "w").write(PageTransition)
 print("\nBeginning build")
 
 # LINUX BUILD
-# Building backend - Linux
-for command in [
-    "rm -rf temp/static/backend",
-    "wget https://raw.githubusercontent.com/BetterLectio/BetterLectio-Flask-Backend/main/requirements.txt -P temp/static/backend/",
-    "wget https://raw.githubusercontent.com/BetterLectio/BetterLectio-Flask-Backend/main/api/app.py -P temp/static/backend -O temp/static/backend/backend.py",
-    "pip install -r temp/static/backend/requirements.txt",
-    "pip install pyinstaller",
-    "pyinstaller --onefile temp/static/backend/backend.py --distpath temp/static/backend/ --workpath temp/temp/",
-    "rm -rf temp/temp temp/static/backend/requirements.txt temp/static/backend/backend.py backend.spec"
-]:
-    os.system(command)
+if system == "Linux":
+    # Building backend - Linux
+    for command in [
+        "rm -rf temp/static/backend",
+        "wget https://raw.githubusercontent.com/BetterLectio/BetterLectio-Flask-Backend/main/requirements.txt -P temp/static/backend/",
+        "wget https://raw.githubusercontent.com/BetterLectio/BetterLectio-Flask-Backend/main/api/app.py -P temp/static/backend -O temp/static/backend/backend.py",
+        "pip install -r temp/static/backend/requirements.txt",
+        "pip install pyinstaller",
+        "pyinstaller --onefile temp/static/backend/backend.py --distpath temp/static/backend/ --workpath temp/temp/",
+        "rm -rf temp/temp temp/static/backend/requirements.txt temp/static/backend/backend.py backend.spec"
+    ]:
+        os.system(command)
 
-os.system("cd temp && npm install && npm run build-electron-linux")
+    os.system("cd temp && npm install && npm run build-electron-linux")
 
-# WINDOWS BUILD - WINE
+    # COPY FILES
+    shutil.copyfile(f"./temp/dist/{package['name']}-{package['version']}.zip", "./dist/betterlectio-linux.zip")
 
-# MAC OS BUILD - DARLING
+# WINDOWS BUILD
+elif system == "Windows":
+    pass
 
+# MAC OS BUILD
+elif system == "Darwin":
+    pass
 
-# COPY FILES
-shutil.copyfile(f"./temp/dist/{package['name']}-{package['version']}.zip", "./dist/betterlectio-linux.zip")
-os.system("rm -rf temp")
+else:
+    raise Exception("OS not supported")
+
+# Clearing build data
+try:
+    shutil.rmtree("temp")
+except Exception:
+    pass
