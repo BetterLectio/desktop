@@ -1,0 +1,27 @@
+{
+	"appId": "desktop.betterlectio.dk",
+	"productName": "BetterLectio",
+	"directories": {
+		"output": "dist"
+	},
+	"linux": {
+		"target": "zip",
+		"icon": "./static/favicon.png",
+		"category": "Education"
+	},
+	"win": {
+		"target": "nsis",
+		"icon": "./static/favicon.png"
+	},
+	"mac": {
+		"target": "dmg"
+	},
+	"files": [
+		"src/electron.cjs",
+		"src/preload.cjs",
+		{
+			"from": "build",
+			"to": ""
+		}
+	]
+}
