@@ -3,17 +3,23 @@ import shutil
 import json
 import platform
 
+import requests
+
 system = platform.system()
 
+def remove(folderName):
+    if system == "Windows":
+        os.system("rmdir /S /Q " + folderName)
+    else:
+        try:
+            shutil.rmtree(folderName)
+        except Exception:
+            pass
+
 # CLEAR ANY PREVIOUS BUILD DATA
-try:
-    shutil.rmtree("temp")
-except Exception:
-    pass
-try:
-    shutil.rmtree("dist")
-except Exception:
-    pass
+remove("temp")
+remove("dist")
+
 os.mkdir("dist")
 
 os.system("git clone https://github.com/BetterLectio/betterLectio.git temp")
@@ -58,6 +64,7 @@ package["author"] = "Better Lectio Team"
 package["description"] = "Better Lectio er en forbedring af Lectio, et dansk lektionssystem. Vi har gjort det nemmere at finde informationer og få overblik over skolegangen. Vi har også lavet en ny, brugervenlig og moderne brugerflade. Better Lectio er open source, så alle kan se koden og bidrage. Projektet er stadig under udvikling, så hvis du har forslag eller finder fejl, er du velkommen til at åbne en issue på GitHub."
 
 package["scripts"]["build-electron-linux"] = "concurrently --maxProcesses=1 \"cross-env NODE_ENV=production BUILD_TYPE=app vite build\" \"electron-builder -l --config build.config.json\""
+package["scripts"]["build-electron-windows"] = "concurrently --maxProcesses=1 \"cross-env NODE_ENV=production BUILD_TYPE=app vite build\" \"electron-builder -w --config build.config.json\""
 
 open("temp/package.json", "w").write(json.dumps(package, indent=2))
 
@@ -85,6 +92,8 @@ PageTransition = PageTransition.replace("""  $: if (previous && end) {
   }""", "")
 open("temp/src/lib/components/PageTransition.svelte", "w").write(PageTransition)
 
+buildConfig = json.loads(open("items/build.config.json").read())
+
 print("\nBeginning build")
 
 # LINUX BUILD
@@ -108,7 +117,21 @@ if system == "Linux":
 
 # WINDOWS BUILD
 elif system == "Windows":
-    pass
+    remove("temp\\static\\backend")
+    os.mkdir("temp/static/backend")
+    open("temp/static/backend/requirements.txt", "wb").write(requests.get("https://raw.githubusercontent.com/BetterLectio/BetterLectio-Flask-Backend/main/requirements.txt").content)
+    open("temp/static/backend/backend.py", "wb").write(requests.get("https://raw.githubusercontent.com/BetterLectio/BetterLectio-Flask-Backend/main/api/app.py").content)
+
+    for command in [
+        "pip install -r temp/static/backend/requirements.txt",
+        "pip install pyinstaller",
+        "pyinstaller --onefile temp/static/backend/backend.py --distpath temp/static/backend/ --workpath temp/temp/",
+        "del temp\static\\backend\\backend.py temp\\static\\backend\\requirements.txt backend.spec"
+    ]:
+        os.system(command)
+
+    os.system("cd temp && npm install && npm run build-electron-windows")
+    shutil.copyfile(f"./temp/dist/{buildConfig['productName']} Setup {package['version']}.exe", f"./dist/{buildConfig['productName']} Setup {package['version']}.exe")
 
 # MAC OS BUILD
 elif system == "Darwin":
@@ -118,7 +141,4 @@ else:
     raise Exception("OS not supported")
 
 # Clearing build data
-try:
-    shutil.rmtree("temp")
-except Exception:
-    pass
+remove("temp")
