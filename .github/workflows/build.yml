@@ -1,0 +1,44 @@
+name: Build/release
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  release:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ['3.10']
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v1
+
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+
+      - name: Set up Python
+        uses: actions/setup-python@v3
+
+      - name: Configuring pip
+        run: |
+          python -m pip install --upgrade pip
+
+      - name: Building betterlectio-linux
+        run: |
+          python3 ./build.py
+
+      - name: Extracting version
+        id: extract_version
+        uses: Saionaro/extract-package-version@v1.1.1
+
+      - name: Uploading release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.extract_version.outputs.version }}
+          files: dist/*
