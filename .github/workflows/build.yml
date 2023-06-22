@@ -34,12 +34,8 @@ jobs:
         run: |
           python3 ./build.py
 
-      - name: Extracting version
-        id: extract_version
-        uses: Saionaro/extract-package-version@v1.1.1
-
       - name: Uploading release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ steps.extract_version.outputs.version }}
+          tag_name: 0.0.1
           files: dist/*
