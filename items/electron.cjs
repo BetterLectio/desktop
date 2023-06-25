@@ -2,6 +2,7 @@ const windowStateManager = require('electron-window-state');
 const contextMenu = require('electron-context-menu');
 const { app, BrowserWindow, ipcMain } = require('electron');
 const nativeImage = require('electron').nativeImage
+const shell = require('electron').shell;
 //const { autoUpdater } = require("electron-updater");
 const serve = require('electron-serve');
 const path = require('path');
@@ -72,6 +73,11 @@ function createWindow() {
 
 	mainWindow.on('close', () => {
 		windowState.saveState(mainWindow);
+	});
+
+	mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+		shell.openExternal(url);
+		return { action: 'deny' };
 	});
 
 	return mainWindow;
