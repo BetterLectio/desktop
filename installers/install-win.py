@@ -1,0 +1,1 @@
+# Lav et shortcut og sæt det ind i C:\ProgramData\Microsoft\Start Menu\Programs\BetterLectio
