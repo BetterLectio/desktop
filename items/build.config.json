@@ -10,7 +10,7 @@
 		"category": "Education"
 	},
 	"win": {
-		"target": "nsis",
+		"target": "zip",
 		"icon": "./static/favicon.png"
 	},
 	"mac": {

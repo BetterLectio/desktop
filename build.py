@@ -131,7 +131,7 @@ elif system == "Windows":
         os.system(command)
 
     os.system("cd temp && npm install && npm run build-electron-windows")
-    shutil.copyfile(f"./temp/dist/{buildConfig['productName']} Setup {package['version']}.exe", f"./dist/{buildConfig['productName']} Setup {package['version']}.exe")
+    shutil.copyfile(f"./temp/dist/{buildConfig['productName']}-{package['version']}-win.zip", f"./dist/betterlectio-win.zip")
 
 # MAC OS BUILD
 elif system == "Darwin":
