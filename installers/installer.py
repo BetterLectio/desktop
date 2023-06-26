@@ -92,8 +92,8 @@ def installer():
 
         updateStatus(f"Klargøre mapperne")
         os.system("rmdir /S /Q \"%Temp%\\betterlectio\"")
-        os.system("rmdir /S /Q C:\\Program Files\\betterlectio")
-        os.system("rmdir /S /Q C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\betterlectio")
+        os.system("rmdir /S /Q \"C:\\Program Files\\betterlectio\"")
+        os.system("rmdir /S /Q \"C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\betterlectio\"")
 
         os.system("mkdir \"%Temp%\\betterlectio\"")
         os.system("mkdir \"C:\\Program Files\\betterlectio\"")
