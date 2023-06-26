@@ -104,7 +104,7 @@ def installer():
 
         updateStatus("Installerer BetterLectio")
         os.system("tar -xf \"%Temp%\\betterlectio\\betterlectio-win.zip\" -C \"C:\\Program Files\\betterlectio\"")
-        os.system("powershell \"$s=(New-Object -COM WScript.Shell).CreateShortcut('C:\ProgramData\Microsoft\Windows\Start Menu\Programs\betterlectio\Better Lectio.lnk');$s.TargetPath='C:\Program Files\betterlectio\BetterLectio.exe';$s.Arguments='connect';$s.IconLocation='C:\Program Files\betterlectio\BetterLectio.exe';$s.WorkingDirectory='C:\Program Files\betterlectio';$s.WindowStyle=7;$s.Save()\"")
+        os.system("powershell \"$s=(New-Object -COM WScript.Shell).CreateShortcut('C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\betterlectio\\Better Lectio.lnk');$s.TargetPath='C:\\Program Files\\betterlectio\\BetterLectio.exe';$s.Arguments='connect';$s.IconLocation='C:\\Program Files\\betterlectio\\BetterLectio.exe';$s.WorkingDirectory='C:\\Program Files\\betterlectio';$s.WindowStyle=7;$s.Save()\"")
 
         updateStatus("Ryder op")
         os.system("rmdir /S /Q \"%Temp%\\betterlectio\"")
