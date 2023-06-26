@@ -4,8 +4,6 @@ if not "%1"=="am_admin" (
     exit /b
 )
 
-echo
-
 rmdir /S /Q "%Temp%\betterlectio"
 
 mkdir "%Temp%\betterlectio"
