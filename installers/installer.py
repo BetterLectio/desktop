@@ -15,7 +15,11 @@ iconSize = [125, 125]
 win = tk.Tk()
 
 win.geometry(f"{windowSize[0]}x{windowSize[1]}")
-win.wm_attributes("-type", "splash")
+if system == "Windows":
+    win.overrideredirect(True)
+    win.eval("tk::PlaceWindow . center")
+else:
+    win.wm_attributes("-type", "splash")
 win.configure(bg="#2A303C")
 
 # https://stackoverflow.com/questions/4055267/tkinter-mouse-drag-a-window-without-borders-eg-overridedirect1
@@ -104,6 +108,9 @@ def installer():
 
         updateStatus("Ryder op")
         os.system("rmdir /S /Q \"%Temp%\\betterlectio\"")
+
+        updateStatus("BetterLectio blev installeret succesfuldt")
+        win.quit()
 
 
 def updateStatus(message):
