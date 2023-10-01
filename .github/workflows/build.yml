@@ -1,8 +1,10 @@
 name: Build/release
 
-on:
-  push:
-    branches: [ main ]
+on: 
+    push:
+        branches: [ main ]
+    repository_dispatch: 
+        types: update
 
 jobs:
   release:
