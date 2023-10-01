@@ -41,6 +41,8 @@ for originalLocation, newLocation in transfers.items():
 
 # MODIFYING PACKAGE.JSON
 package = json.loads(open("temp/package.json").read())
+open("version.txt", "w").write(package["version"])
+
 package["dependencies"]["electron-window-state"] = "^5.0.3"
 package["dependencies"]["electron-context-menu"] = "^3.6.1"
 package["dependencies"]["electron-serve"] = "^1.1.0"
