@@ -72,14 +72,14 @@ open("temp/package.json", "w").write(json.dumps(package, indent=2))
 
 # REMOVING MIXPANEL
 layout = open("temp/src/routes/+layout.js").read()
-layout = layout.replace("""import { PUBLIC_MIXPANEL_TOKEN } from "$env/static/public";
+layout = layout.replace("""import { PUBLIC_MIXPANEL_TOKEN } from '$env/static/public';
 import mixpanel from 'mixpanel-browser';
 
 mixpanel.init(PUBLIC_MIXPANEL_TOKEN, {
-  host: "api-eu.mixpanel.com",
-  debug: true,
+	host: 'api-eu.mixpanel.com',
+	debug: true
 });
-mixpanel.set_config({ 'persistence': 'localStorage' })""", "")
+mixpanel.set_config({ persistence: 'localStorage' });""", "")
 open("temp/src/routes/+layout.js", "w").write(layout)
 
 PageTransition = open("temp/src/lib/components/PageTransition.svelte").read()
